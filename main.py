@@ -1,6 +1,7 @@
 from adversarialLLM import call_judge_adversarial_llm
 from factcheckLLM import call_judge_factcheck_llm
 from consistencyMonitors import call_consistency_language_monitor, call_consistency_semantics_monitor, call_consistency_nli_monitor
+from surprisal import compute_surprisal
 from fastapi import FastAPI
 from pydantic import BaseModel
 
@@ -35,3 +36,8 @@ def handle_consistency_semantics(llm_response: LLMResponse):
 @app.get("/api/monitor/consistency_nli")
 def handle_consistency_nli(llm_response: LLMResponse):
     return call_consistency_nli_monitor(llm_response.user_prompt, llm_response.model_cot, llm_response.model_answer)
+    return call_judge_adversarial_llm(llm_response.user_request, llm_response.model_cot, llm_response.model_answer)
+
+@app.get("/api/monitor/surprisal")
+def handle_surprsal(llm_response: LLMResponse):
+    return compute_surprisal(llm_response.model_cot)["score"]
