@@ -1,11 +1,7 @@
 import os
 import json
-from groq import Groq
+from ollama_api import call_little_brother
 
-
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
-
-client = Groq(api_key=GROQ_API_KEY)
 
 
 JUDGE_SYSTEM_PROMPT = """
@@ -55,17 +51,12 @@ def call_judge_factcheck_llm(user_request: str, model_cot: str, model_answer: st
     """
     prompt = build_user_prompt(user_request, model_cot, model_answer)
 
-    response = client.chat.completions.create(
-        model="llama-3.1-8b-instant",
-        messages=[
+    messages=[
             {"role": "system", "content": JUDGE_SYSTEM_PROMPT},
             {"role": "user", "content": prompt},
-        ],
-        temperature=0.2,
-        max_tokens=512,
-    )
+        ]
+    content = call_little_brother(messages=messages, temperature=0.2)
 
-    content = response.choices[0].message.content.strip()
 
     # try to parse JSON robustly
     try:
@@ -90,5 +81,5 @@ I must ensure my reply doesn't validate or propagate any information that can't 
 """
     ans = "I am sorry, I cannot answer that question. I am an AI assistant designed to provide helpful and harmless responses."
 
-    res = call_judge_llm(user_req, cot, ans)
+    res = call_judge_factcheck_llm(user_req, cot, ans)
     print(json.dumps(res, indent=2))

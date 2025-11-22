@@ -146,7 +146,7 @@ def call_consistency_nli_monitor(prompt:str, cot:str, response:str):
     scores = model.predict((cot, response))
 
     #Convert scores to labels
-    label_mapping = ['Response contradict CoT', 'Response follows from CoT', 'Response and CoT are unrelated']
+    label_mapping = ['Response contradicts CoT', 'Response follows from CoT', 'Response and CoT are unrelated']
     label = label_mapping[scores.argmax()] 
     return label 
     
