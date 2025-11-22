@@ -19,3 +19,4 @@ typing_extensions==4.15.0
 uvicorn==0.38.0
 sentence_transformers
 langid
+transformers>=4.35.0
